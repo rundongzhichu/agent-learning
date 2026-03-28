@@ -168,6 +168,30 @@ modelIO是与语言模型交互的核心组件，在整个框架中有很重要�
 包括输入提示（format）、调用模型（Predict）、输出解析（Parse），分别对应着Prompt Template， Model， output parser
 ![modelIO.png](static/modelIO.png)
 
+#### 模型调用的分类
+
+角度1: 按照模型的功能  
+
+（1）非对话模型（LLMS， Text Model）
+![非对话模型.png](static/非对话模型.png)
+（2）对话模型（Chat Model）  
+![对话模型.png](static/对话模型.png)
+（3）嵌入型（embedding Model）
+![嵌入模型.png](static/嵌入模型.png)
+
+角度2: 按照模型调用时，参数书写的位置不同（api-key base-url model）  
+硬编码：  
+环境变量：  
+配置文件：  
+
+角度3: 具体api的调用  
+LangChain的API  
+
+OpenAI官方的API  
+
+其他平台提供的API  
+
+
 
 
 
