@@ -192,6 +192,17 @@ OpenAI官方的API
 其他平台提供的API  
 
 
+#### AI Message类型
+（1）SystemMessage  
+（2）HumanMessage  
+（3）AIMessage  
+（4）FunctionMessage  
+（5）ToolMessage  
+（6）ChatMessage  
+
+
+#### 多轮对话和上下文记忆
+
 
 
 
