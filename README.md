@@ -38,11 +38,11 @@
 ![Fine-tuning](static/Fine-tuning.png)
 
 
-## Lanchain的核组件
+## lanchain 开发框架
 
-## LangChain + LangGraph + LangSmith 
+### Lanchain的核心组件 LangChain + LangGraph + LangSmith 
 
-### 一、核心定位与关系
+#### 一、核心定位与关系
 
 这三个项目共同构成了一个完整的 AI 应用开发与运维生态，其关系可以概括为：
 
@@ -54,9 +54,9 @@ LangSmith = Monitor & Scale（监控与扩展）
 
 它们之间的架构关系是分层的：**LangChain 的最新版本（1.0+）是构建在 LangGraph 之上的**。这意味着 LangGraph 提供了更底层的、强大的工作流编排能力，而 LangChain 则在此基础上提供了更高阶的抽象和易用的组件库。
 
-### 二、各组件详解
+#### 二、各组件详解
 
-#### **LangChain**
+##### **LangChain**
 
 *   **定位**: 基础框架与组件库（积木）。
 *   **核心价值**: 提供了一套模块化的、标准化的组件，用于快速构建 LLM 应用。它解决了“如何编写”AI 应用的问题。
@@ -67,7 +67,7 @@ LangSmith = Monitor & Scale（监控与扩展）
     *   **RAG 实现**: 简化检索增强生成（Retrieval-Augmented Generation）的开发流程。
 *   **适用场景**: 快速原型验证、简单的问答系统、线性工作流。
 
-#### **LangGraph**
+##### **LangGraph**
 
 *   **定位**: 图结构工作流编排引擎（施工图）。
 *   **核心价值**: 提供了基于有向图（DAG）的状态机来编排复杂的、非线性的 Agent 工作流。它解决了“如何运行”复杂逻辑的问题。
@@ -78,7 +78,7 @@ LangSmith = Monitor & Scale（监控与扩展）
     *   **原生支持人机协作**: 可以在流程中插入人工审核环节，并从中断处继续执行。
 *   **适用场景**: 复杂的客服系统、多步骤数据分析、需要循环迭代的代码审查 Agent。
 
-#### **LangSmith**
+##### **LangSmith**
 
 *   **定位**: 可观测性与评估平台（监控中心）。
 *   **核心价值**: 为生产环境的 AI 应用提供调试、监控、测试和优化的能力。它解决了“如何优化和维护”AI 应用的问题。
@@ -89,7 +89,7 @@ LangSmith = Monitor & Scale（监控与扩展）
     *   **调试 (Debugging)**: 当输出不符合预期时，可以精确地定位到是哪个环节出了问题。
 *   **适用场景**: 生产环境部署、性能瓶颈分析、Prompt 效果优化。
 
-### 三、选型建议
+#### 三、选型建议
 
 | 场景 | 推荐技术 |
 | :--- | :--- |
@@ -98,14 +98,11 @@ LangSmith = Monitor & Scale（监控与扩展）
 | **复杂决策、条件判断、循环** | LangGraph |
 | **生产级应用，需要监控和优化** | LangChain + LangGraph + LangSmith 三者结合 |
 
-
-尚硅谷LangChain教程，langchain实战快速入门  ？集
-
-## LangChain 六大核心模块
+### LangChain 六大核心模块
 
 根据 LangChain 官方定义，其核心架构由以下六大模块构成，是构建所有 LLM 应用的基础：
 
-### 1. Models（模型）
+#### 1. Models（模型）
 
 
 *   **作用**: LLM 应用的“大脑”，负责理解和生成语言。
@@ -114,7 +111,7 @@ LangSmith = Monitor & Scale（监控与扩展）
     *   **Chat Models (对话模型)**: 专为多轮对话优化，能更好地处理上下文消息（如 `HumanMessage`, `SystemMessage`）。
 *   **核心价值**: 提供统一的接口，使开发者可以轻松地在不同提供商（OpenAI, Anthropic, Gemini 等）和不同类型的模型间切换，而无需重写大量业务逻辑。
 
-### 2. Prompts（提示）
+#### 2. Prompts（提示）
 
 
 *   **作用**: 引导和约束模型行为的指令，是控制模型输出质量的关键。
@@ -123,7 +120,7 @@ LangSmith = Monitor & Scale（监控与扩展）
     *   **Few-Shot Learning**: 在提示中加入少量示例（Input/Output pairs），引导模型模仿特定的格式和风格。
 *   **重要性**: “Garbage in, garbage out.”，高质量的 Prompt 是高质量输出的前提。
 
-### 3. Chains（链）
+#### 3. Chains（链）
 
 
 *   **作用**: 将多个独立的组件（如模型调用、工具使用、数据处理）串联成一个完整的、有序的工作流。
@@ -132,7 +129,7 @@ LangSmith = Monitor & Scale（监控与扩展）
     *   **SequentialChain**: 将多个子链按顺序执行，前一个链的输出作为下一个链的输入。
 *   **典型应用**: RAG（检索 -> 注入上下文 -> 生成回答）、聊天机器人（接收输入 -> 查询知识库 -> 生成回复）。
 
-### 4. Agents（代理）
+#### 4. Agents（代理）
 
 
 *   **作用**: 能够自主思考、规划和行动的智能体，可以根据任务目标，动态决定调用哪些工具以及调用顺序。
@@ -144,7 +141,7 @@ LangSmith = Monitor & Scale（监控与扩展）
     *   **循环**: 将结果反馈给 LLM，重复上述过程直到任务完成。
 *   **核心组件**: `AgentExecutor` 负责协调 LLM 和 Tools 的交互。
 
-### 5. Memory（记忆）
+#### 5. Memory（记忆）
 
 
 *   **作用**: 为 LLM 应用提供短期或长期的记忆能力，使其能够进行多轮对话和上下文相关的响应。
@@ -154,7 +151,7 @@ LangSmith = Monitor & Scale（监控与扩展）
     *   **VectorStoreRetrieverMemory**: 将对话历史向量化存储，通过相似性检索相关的历史片段，实现更智能的上下文召回。
 *   **应用场景**: 聊天机器人、个人助手。
 
-### 6. Retrieval（检索）
+#### 6. Retrieval（检索）
 
 
 *   **作用**: 解决 LLM 的“知识盲区”和“幻觉”问题，通过引入外部知识源来增强模型的生成能力（RAG - Retrieval-Augmented Generation）。
@@ -166,7 +163,10 @@ LangSmith = Monitor & Scale（监控与扩展）
     5.  **检索 (Retrieve)**: 当用户提问时，在向量库中查找最相关的文本块，并将其作为上下文注入到 Prompt 中。
 *   **核心价值**: 使得 LLM 能够基于最新的、私有的或特定领域的知识进行回答，极大地提升了准确性和实用性。
 
-
+### langchain Model I/O
+modelIO是与语言模型交互的核心组件，在整个框架中有很重要的地位。
+包括输入提示（format）、调用模型（Predict）、输出解析（Parse），分别对应着Prompt Template， Model， output parser
+![modelIO.png](static/modelIO.png)
 
 
 
