@@ -172,4 +172,4 @@ LangSmith = Monitor & Scale（监控与扩展）
 
 
 
-尚硅谷LangChain教程，langchain实战快速入门  9集8:15
+尚硅谷LangChain教程，langchain实战快速入门  9集12.39

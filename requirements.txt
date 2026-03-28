@@ -1,0 +1,10 @@
+dotenv~=0.9.9
+python-dotenv~=1.2.2
+langchain-openai~=1.1.11
+langchain~=1.2.13
+openai~=2.29.0
+beautifulsoup4~=4.14.3
+langchain-core~=1.2.20
+langchain-community~=0.4.1
+langchain-text-splitters~=1.1.1
+faiss-cpu
