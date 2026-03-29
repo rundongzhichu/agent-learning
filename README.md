@@ -368,4 +368,236 @@ result = custom_prompt.format(concept="量子纠缠")
 ```
 ---
 
+#### 输出解析器（Output Parsers）
+
+**概念**：
+
+语言模型返回的内容通常都是字符串的格式（文本格式），但在实际 AI 应用开发过程中，往往希望 model 可以返回**更直观、更格式化的内容**，以确保应用能够顺利进行后续的逻辑处理。此时，LangChain 提供的**输出解析器**就派上用场了。
+
+**作用**：
+
+输出解析器（Output Parser）负责**获取 LLM 的输出并将其转换为更合适的格式**。这在应用开发中及其重要。
+
+---
+
+** 输出解析器的分类**
+
+LangChain 有许多不同类型的输出解析器：
+
+**1. StrOutputParser（字符串解析器）**
+
+最基础的解析器，直接返回字符串。
+
+```python
+from langchain_core.output_parsers import StrOutputParser
+
+parser = StrOutputParser()
+
+# 解析 AI 消息
+response = AIMessage(content="这是一个测试回答")
+result = parser.invoke(response)
+print(result)  # 输出：这是一个测试回答
+```
+
+**2. JsonOutputParser（JSON 解析器）**
+
+JSON 解析器，确保输出符合特定 JSON 对象格式。
+
+```python
+from langchain_core.output_parsers import JsonOutputParser
+from langchain_core.prompts import PromptTemplate
+
+parser = JsonOutputParser()
+
+prompt = PromptTemplate(
+    template="请提取以下文本的关键信息：\n{text}\n\n{format_instructions}",
+    input_variables=["text"],
+    partial_variables={"format_instructions": parser.get_format_instructions()}
+)
+
+# 使用
+formatted_prompt = prompt.format(text="苹果公司成立于 1976 年，创始人是 Steve Jobs。")
+response = llm.invoke(formatted_prompt)
+result = parser.invoke(response)
+# 输出：{"company": "苹果公司", "founded": "1976", "founder": "Steve Jobs"}
+```
+
+**3. XMLOutputParser（XML 解析器）**
+
+XML 解析器，允许以流行的 XML 格式从 LLM 获取结果。
+
+```python
+from langchain_core.output_parsers import XMLOutputParser
+
+parser = XMLOutputParser()
+
+prompt = PromptTemplate(
+    template="请描述{animal}：\n{format_instructions}",
+    input_variables=["animal"],
+    partial_variables={"format_instructions": parser.get_format_instructions()}
+)
+
+# 使用
+formatted_prompt = prompt.format(animal="猫")
+response = llm.invoke(formatted_prompt)
+result = parser.invoke(response)
+# 输出：<description><name>猫</name><type>哺乳动物</type>...</description>
+```
+
+**4. CommaSeparatedListOutputParser（CSV 解析器）**
+
+CSV 解析器，模型的输出以逗号分隔，以列表形式返回输出。
+
+```python
+from langchain_core.output_parsers import CommaSeparatedListOutputParser
+
+parser = CommaSeparatedListOutputParser()
+
+prompt = PromptTemplate(
+    template="列出{topic}的三个例子：\n{format_instructions}",
+    input_variables=["topic"],
+    partial_variables={"format_instructions": parser.get_format_instructions()}
+)
+
+# 使用
+formatted_prompt = prompt.format(topic="水果")
+response = llm.invoke(formatted_prompt)
+result = parser.invoke(response)
+# 输出：['苹果', '香蕉', '橙子']
+```
+
+**5. DatetimeOutputParser（日期时间解析器）**
+
+日期时间解析器，可用于将 LLM 输出解析为日期时间格式。
+
+```python
+from langchain_core.output_parsers import DatetimeOutputParser
+from datetime import datetime
+
+parser = DatetimeOutputParser()
+
+prompt = PromptTemplate(
+    template="{question}\n{format_instructions}",
+    input_variables=["question"],
+    partial_variables={"format_instructions": parser.get_format_instructions()}
+)
+
+# 使用
+formatted_prompt = prompt.format(question="中华人民共和国什么时候成立的？")
+response = llm.invoke(formatted_prompt)
+result = parser.invoke(response)
+# 输出：datetime.datetime(1949, 10, 1)
+print(type(result))  # <class 'datetime.datetime'>
+```
+
+**6. PydanticOutputParser（Pydantic 解析器）**
+
+使用 Pydantic 模型定义输出结构，更强大的类型检查。
+
+```python
+from langchain_core.output_parsers import PydanticOutputParser
+from pydantic import BaseModel, Field
+
+# 定义输出结构
+class Country(BaseModel):
+    name: str = Field(description="国家名称")
+    capital: str = Field(description="首都")
+    population: int = Field(description="人口数量（万）")
+
+parser = PydanticOutputParser(pydantic_object=Country)
+
+prompt = PromptTemplate(
+    template="请提供{country}的信息：\n{format_instructions}",
+    input_variables=["country"],
+    partial_variables={"format_instructions": parser.get_format_instructions()}
+)
+
+# 使用
+formatted_prompt = prompt.format(country="中国")
+response = llm.invoke(formatted_prompt)
+result = parser.invoke(response)
+# 输出：Country(name='中国', capital='北京', population=140000)
+print(result.name)  # 访问属性
+```
+
+**7. RetryOutputParser（重试解析器）**
+
+用于处理解析失败时的重试逻辑。
+
+```python
+from langchain_core.output_parsers import RetryOutputParser
+from langchain_core.prompts import PromptTemplate
+
+# 当解析失败时，使用这个解析器生成重试提示
+parser = RetryOutputParser.from_llm(
+    llm=llm,
+    original_parser=JsonOutputParser()
+)
+
+# 如果原始解析失败，会自动生成重试提示
+result = parser.parse_with_prompt(llm_response, prompt)
+```
+
+---
+
+**使用场景对比**：
+
+| 解析器 | 返回类型 | 适用场景 |
+|--------|----------|----------|
+| StrOutputParser | `str` | 普通文本输出 |
+| JsonOutputParser | `dict` | 结构化数据提取 |
+| XMLOutputParser | `xml` | XML 格式输出 |
+| CommaSeparatedListOutputParser | `list` | 列表形式输出 |
+| DatetimeOutputParser | `datetime` | 日期时间解析 |
+| PydanticOutputParser | `BaseModel` | 复杂结构化数据 |
+| RetryOutputParser | 任意 | 错误处理和重试 |
+
+---
+
+**最佳实践**：
+
+1. ✅ **选择合适的解析器**：根据应用需求选择
+   ```python
+   # 需要结构化数据 → JsonOutputParser
+   # 需要列表 → CommaSeparatedListOutputParser
+   # 需要日期 → DatetimeOutputParser
+   ```
+
+2. ✅ **使用 format_instructions**：让模型知道如何格式化
+   ```python
+   prompt = PromptTemplate(
+       template="{question}\n{format_instructions}",
+       input_variables=["question"],
+       partial_variables={"format_instructions": parser.get_format_instructions()}
+   )
+   ```
+
+3. ✅ **添加错误处理**：解析可能失败
+   ```python
+   try:
+       result = parser.invoke(response)
+   except OutputParserException as e:
+       print(f"解析失败：{e}")
+       # 使用重试解析器或降级处理
+   ```
+
+4. ✅ **组合使用**：可以链式组合多个解析器
+   ```python
+   chain = prompt | llm | StrOutputParser() | json.loads
+   ```
+
+5. ✅ **定义清晰的 Schema**：使用 Pydantic 定义复杂结构
+   ```python
+   class Product(BaseModel):
+       name: str
+       price: float
+       description: str
+   ```
+
+---
+
+
+
+
+
 ---尚硅谷LangChain教程，langchain实战快速入门  18集1:47
