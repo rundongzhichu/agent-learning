@@ -205,6 +205,167 @@ OpenAI官方的API
 模型本身没有上下文记忆，需要借助我们维护的消息体列表
 
 
+#### 阻塞调用 流调用 批量调用 异步盗用
 
+#### 提示词模板
 
-尚硅谷LangChain教程，langchain实战快速入门  9集12.39
+**有几种不同类型的提示模板：**
+
+**1. PromptTemplate（LLM 提示模板）**
+
+LLM 提示模板，用于**生成字符串提示**。它使用 Python 的字符串来模板提示。
+
+```python
+from langchain_core.prompts import PromptTemplate
+
+# 使用 Python 字符串模板
+prompt = PromptTemplate.from_template(
+    "请解释{concept}是什么，并给出{num}个例子。"
+)
+
+# 格式化提示
+formatted = prompt.format(concept="机器学习", num=3)
+# 输出：请解释机器学习是什么，并给出 3 个例子。
+```
+
+**2. ChatPromptTemplate（聊天提示模板）**
+
+聊天提示模板，用于**组合各种角色的消息模板**，传入聊天模型。
+
+```python
+from langchain_core.prompts import ChatPromptTemplate
+
+# 组合不同角色的消息
+prompt = ChatPromptTemplate.from_messages([
+    ("system", "你是一个{role}，擅长{skill}"),
+    ("human", "你好，我想了解{topic}"),
+    ("ai", "好的，我来为你解释{topic}"),
+    ("human", "{followup_question}")
+])
+
+# 格式化
+messages = prompt.format_messages(
+    role="AI 助手",
+    skill="解释复杂概念",
+    topic="量子计算",
+    followup_question="它和经典计算有什么区别？"
+)
+```
+
+**3. XxxMessagePromptTemplate（消息模板模板）**
+
+消息模板的模板，包括：
+- `SystemMessagePromptTemplate` - 系统消息模板
+- `HumanMessagePromptTemplate` - 用户消息模板  
+- `AIMessagePromptTemplate` - AI 消息模板
+- `ChatMessagePromptTemplate` - 聊天消息模板
+
+```python
+from langchain_core.prompts import ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate
+
+# 系统消息模板
+system_message_prompt = SystemMessagePromptTemplate.from_template(
+    "你是一个{role}。"
+)
+
+# 用户消息模板
+human_message_prompt = HumanMessagePromptTemplate.from_template(
+    "{user_input}"
+)
+
+# 组合使用
+chat_prompt = ChatPromptTemplate.from_messages([
+    system_message_prompt,
+    human_message_prompt
+])
+```
+
+**4. FewShotPromptTemplate（样本提示词模板）**
+
+样本提示词模板，通过**示例来教模型如何回答**（Few-shot Learning）。
+
+```python
+from langchain_core.prompts import FewShotPromptTemplate, PromptTemplate
+
+# 定义示例
+examples = [
+    {
+        "question": "谁是美国第一位总统？",
+        "answer": "乔治·华盛顿"
+    },
+    {
+        "question": "谁是法国第一位皇帝？",
+        "answer": "拿破仑·波拿巴"
+    }
+]
+
+# 定义示例模板
+example_template = PromptTemplate(
+    input_variables=["question", "answer"],
+    template="问题：{question}\n答案：{answer}"
+)
+
+# 创建少样本提示模板
+prompt = FewShotPromptTemplate(
+    examples=examples,
+    example_prompt=example_template,
+    suffix="问题：{new_question}\n答案：",
+    input_variables=["new_question"]
+)
+
+# 格式化
+formatted = prompt.format(new_question="谁是中国第一位皇帝？")
+```
+
+**5. PipelinePrompt（管道提示词模板）**
+
+管道提示词模板，用于**把几个提示词组合在一起使用**，前一个的输出作为后一个的输入。
+
+```python
+from langchain_core.prompts import PipelinePromptTemplate, PromptTemplate
+
+# 定义多个提示模板
+prompt1 = PromptTemplate.from_template("请总结：{text}")
+prompt2 = PromptTemplate.from_template("请翻译以下内容为英文：{summary}")
+
+# 创建管道
+pipeline = PipelinePromptTemplate(
+    prompts=[
+        ("summary", prompt1),
+        ("translation", prompt2)
+    ]
+)
+```
+
+**6. 自定义模板**
+
+允许**基于其它模板类来定制自己的提示词模板**。
+
+```python
+from langchain_core.prompts import PromptTemplate
+
+class CustomPromptTemplate(PromptTemplate):
+    """自定义提示模板"""
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # 添加自定义逻辑
+        self.custom_prefix = "[自定义] "
+    
+    def format(self, **kwargs):
+        # 在格式化前添加自定义处理
+        formatted_text = super().format(**kwargs)
+        return self.custom_prefix + formatted_text
+
+# 使用自定义模板
+custom_prompt = CustomPromptTemplate(
+    template="请解释{concept}",
+    input_variables=["concept"]
+)
+
+result = custom_prompt.format(concept="量子纠缠")
+# 输出：[自定义] 请解释量子纠缠
+```
+---
+
+---尚硅谷LangChain教程，langchain实战快速入门  18集1:47
