@@ -636,7 +636,9 @@ result = parser.parse_with_prompt(llm_response, prompt)
 11. **Multi-Modal Chain**：多模态链，用于处理多模态数据。
 12. **Multi-Agent Chain**：多代理链，用于处理多代理任务。
 13. **Multi-Task Chain**：多任务链，用于处理多任务。
-
+14. 数学链  
+15. 路由链  
+16. 文档链  
 
 
 
