@@ -640,6 +640,38 @@ result = parser.parse_with_prompt(llm_response, prompt)
 15. 路由链  
 16. 文档链  
 
+#### Memory 记忆能力
+模型本身是没有记忆能力的，但是可以通过**记忆**来保存模型执行过程中所处理的信息，从而实现**长时记忆**。
+实现这个记忆功能，就需要额外的模块去保存我们和模型对话的上下文信息，然后在下一次请求时，把所有的历史信息都输入给模型，让模型输出最终结果。  
+而在 LangChain 中，提供这个功能的模块就称为 Memory（记忆），用于存储用户和模型交互的历史信息。  
 
 
----尚硅谷LangChain教程，langchain实战快速入门  18集1:47
+**agent 基于 memeory 调用 LLM 的原理图**
+
+```mermaid
+graph TB
+    User[用户] -->|输入问题 | Memory[Memory 记忆模块]
+    Memory -->|读取历史对话 | Context[上下文管理器]
+    Context -->|组装完整提示 | Prompt[Prompt Template]
+    Prompt -->|包含历史记录的提示 | LLM[大语言模型]
+    LLM -->|生成回复 | Output[输出解析器]
+    Output -->|最终回复 | User
+    Output -->|保存新对话 | Memory
+    
+    subgraph Memory 类型
+        M1[ConversationBufferMemory<br/>缓冲记忆 - 存储所有历史]
+        M2[ConversationSummaryMemory<br/>总结记忆 - 压缩历史]
+        M3[VectorStoreRetrieverMemory<br/>向量记忆 - 检索相关历史]
+    end
+    
+    style User fill:#e1f5ff
+    style Memory fill:#fff3cd
+    style LLM fill:#d4edda
+    style Output fill:#f8d7da
+```
+
+**🎯 实战 Demo**: 查看 [`demo/demo-memory/custom_memory_demo.py`](demo/demo-memory/custom_memory_demo.py) - 包含三种自定义记忆实现的完整示例
+
+
+
+---尚硅谷LangChain教程，langchain实战快速入门  47集1:47

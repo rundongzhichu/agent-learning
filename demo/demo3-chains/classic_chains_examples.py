@@ -225,7 +225,7 @@ final_prompt = PromptTemplate.from_template("""
 """)
 
 # 创建 StuffDocumentsChain
-stuff_chain = StuffDocumentsChain.from_llm(
+stuff_chain = StuffDocumentsChain.from_orm(
     llm=llm,
     document_prompt=document_prompt,
     final_prompt=final_prompt
