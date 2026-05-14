@@ -672,6 +672,68 @@ graph TB
 
 **🎯 实战 Demo**: 查看 [`demo/demo-memory/custom_memory_demo.py`](demo/demo-memory/custom_memory_demo.py) - 包含三种自定义记忆实现的完整示例
 
+---
 
+## LangGraph 和 LangSmith 示例
+
+### LangGraph 示例 (demo4-langGraph)
+
+LangGraph 是用于构建有状态、多参与者应用的图结构工作流编排引擎。
+
+**示例文件：**
+- [langgraph_example.py](demo/demo4-langGraph/langgraph_example.py) - 基础线性工作流示例
+- [langgraph_conditional_example.py](demo/demo4-langGraph/langgraph_conditional_example.py) - 条件分支工作流示例
+
+**运行示例：**
+```bash
+# 运行基础工作流
+python demo/demo4-langGraph/langgraph_example.py
+
+# 运行条件分支示例
+python demo/demo4-langGraph/langgraph_conditional_example.py
+```
+
+**安装依赖：**
+```bash
+pip install langgraph
+```
+
+**详细说明：** 查看 [demo4-langGraph/README.md](demo/demo4-langGraph/README.md)
+
+### LangSmith 示例 (demo5-langSmith)
+
+LangSmith 是 LangChain 的开发平台，用于追踪、调试、测试和监控 LLM 应用。
+
+**示例文件：**
+- [langsmith_example.py](demo/demo5-langSmith/langsmith_example.py) - LangSmith 追踪示例
+
+**运行示例：**
+```bash
+# 配置环境变量后运行
+python demo/demo5-langSmith/langsmith_example.py
+```
+
+**安装依赖：**
+```bash
+pip install langchain-openai langchain-core
+```
+
+**配置步骤：**
+1. 在 [https://smith.langchain.com](https://smith.langchain.com) 注册账号
+2. 获取 API Key
+3. 复制 `.env.example` 为 `.env` 并填写配置
+4. 运行示例
+
+**详细说明：** 查看 [demo5-langSmith/README.md](demo/demo5-langSmith/README.md)
+
+### 统一运行器
+
+提供了一个交互式运行器来运行所有示例：
+
+```bash
+python demo/run_examples.py
+```
+
+---
 
 ---尚硅谷LangChain教程，langchain实战快速入门  47集1:47

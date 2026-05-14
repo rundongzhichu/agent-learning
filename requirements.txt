@@ -8,3 +8,5 @@ langchain-core~=1.2.20
 langchain-community~=0.4.1
 langchain-text-splitters~=1.1.1
 faiss-cpu
+langgraph>=0.2.0
+langsmith>=0.1.0
